@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="PrimeDetectorPro/PrimeDetectorPro.vcxproj" Id="c6b03be7-814b-46b6-adb8-ea673d98da58" />
+</Solution>
