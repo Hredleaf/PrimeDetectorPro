@@ -218,14 +218,5 @@ int32_t main()
 
     printf("Time-consuming %.3f microseconds.\n", DurationNanoseconds);
 
-    if (IsPrime(Number))
-    {
-        printf("It is a prime number.");
-    }
-    else
-    {
-        printf("It is not a prime number.");
-    }
-
     return 0;
 }
