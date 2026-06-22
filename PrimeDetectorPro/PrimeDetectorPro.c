@@ -3,7 +3,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <intrin.h>
+<<<<<<< HEAD
 #include <Windows.h>
+=======
+>>>>>>> eae492688ad3ad8eba567c41dab9dcfacbdd0abe
 #include <stdio.h>
 
 __forceinline uint64_t __stdcall MultiplyModulo(const uint64_t LeftInput, const uint64_t RightInput, const uint64_t Modulo)
@@ -30,6 +33,7 @@ __forceinline uint64_t __stdcall PowerModulo(uint64_t Base, uint64_t Exponent, c
     return Result;
 }
 
+<<<<<<< HEAD
 __forceinline uint64_t __stdcall GCD(uint64_t LeftInput, uint64_t RightInput)
 {
     while (RightInput)
@@ -41,6 +45,9 @@ __forceinline uint64_t __stdcall GCD(uint64_t LeftInput, uint64_t RightInput)
 }
 
 __forceinline bool __stdcall MillerRabinWitness(const uint64_t Number, const uint64_t OddPart, const uint64_t Shift, const uint64_t TestBase)
+=======
+__forceinline bool __stdcall MillerRabinWitness(uint64_t Number, uint64_t OddPart, uint64_t Shift, uint64_t TestBase)
+>>>>>>> eae492688ad3ad8eba567c41dab9dcfacbdd0abe
 {
     uint64_t TestValue = PowerModulo(TestBase, OddPart, Number);
     if (TestValue == 1 || TestValue == Number - 1)
@@ -195,6 +202,7 @@ int32_t main()
 {
     uint64_t Number;
     scanf("%llu", &Number);
+<<<<<<< HEAD
 
     LARGE_INTEGER CounterFrequency, StartCount, EndCount;
     double DurationNanoseconds;
@@ -218,5 +226,16 @@ int32_t main()
 
     printf("Time-consuming %.3f microseconds.\n", DurationNanoseconds);
 
+=======
+    if (IsPrime(Number))
+    {
+        printf("It is a prime number.");
+    }
+    else
+    {
+        printf("It is not a prime number.");
+    }
+
+>>>>>>> eae492688ad3ad8eba567c41dab9dcfacbdd0abe
     return 0;
 }
