@@ -1,11 +1,8 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <intrin.h>
-#include <Windows.h>
-#include <conio.h>
-#include <stdio.h>
+
+
 
 __forceinline uint64_t __stdcall MultiplyModulo(const uint64_t LeftInput, const uint64_t RightInput, const uint64_t Modulo)
 {
@@ -128,7 +125,7 @@ __forceinline bool __stdcall IsPrime(uint64_t Number)
 
         return true;
     }
-    else if(Number> 4759123140ULL)
+    else if (Number > 4759123140ULL)
     {
         ReducedBase = 2 % Number;
         if (ReducedBase && !MillerRabinWitness(Number, OddPart, Shift, ReducedBase))
@@ -244,14 +241,14 @@ __forceinline PrimeFactors __stdcall PrimeFactorize(uint64_t Number)
     uint64_t TemporaryFactors[16];
     *TemporaryFactors = Number;
     uint64_t TemporaryFactorsNumber = 1;
-    uint64_t CurrentDecomposeNumber;
+    uint64_t DecomposeNumber;
 
     while (TemporaryFactorsNumber)
     {
         --TemporaryFactorsNumber;
-        CurrentDecomposeNumber = TemporaryFactors[TemporaryFactorsNumber];
+        DecomposeNumber = TemporaryFactors[TemporaryFactorsNumber];
 
-        for (uint64_t C = 1; C < CurrentDecomposeNumber; ++C)
+        for (uint64_t C = 1; C < DecomposeNumber; ++C)
         {
             uint64_t X = 2;
             uint64_t Y = 2;
@@ -259,18 +256,35 @@ __forceinline PrimeFactors __stdcall PrimeFactorize(uint64_t Number)
 
             while (CurrentGCD == 1)
             {
-                X = MultiplyModulo(X, X, CurrentDecomposeNumber) + C;
-                if (X >= CurrentDecomposeNumber) X -= CurrentDecomposeNumber;
+                // Perform one iterations on X.
+                {
+                    X = MultiplyModulo(X, X, DecomposeNumber) + C;
+                    if (X >= DecomposeNumber)
+                    {
+                        X -= DecomposeNumber;
+                    }
+                }
 
-                Y = MultiplyModulo(Y, Y, CurrentDecomposeNumber) + C;
-                if (Y >= CurrentDecomposeNumber) Y -= CurrentDecomposeNumber;
-                Y = MultiplyModulo(Y, Y, CurrentDecomposeNumber) + C;
-                if (Y >= CurrentDecomposeNumber) Y -= CurrentDecomposeNumber;
+                // Perform two iterations on Y.
+                {
+                    Y = MultiplyModulo(Y, Y, DecomposeNumber) + C;
+                    if (Y >= DecomposeNumber)
+                    {
+                        Y -= DecomposeNumber;
+                    }
+                    Y = MultiplyModulo(Y, Y, DecomposeNumber) + C;
+                    if (Y >= DecomposeNumber)
+                    {
+                        Y -= DecomposeNumber;
+                    }
+                }
 
-                CurrentGCD = GCD((X > Y) ? (X - Y) : (Y - X), CurrentDecomposeNumber);
+                // Update current GCD.
+                CurrentGCD = GCD((X > Y) ? (X - Y) : (Y - X), DecomposeNumber);
             }
 
-            if (CurrentGCD != CurrentDecomposeNumber)
+            // Find a factor.
+            if (CurrentGCD != DecomposeNumber)
             {
                 if (IsPrime(CurrentGCD))
                 {
@@ -282,7 +296,8 @@ __forceinline PrimeFactors __stdcall PrimeFactorize(uint64_t Number)
                     TemporaryFactors[TemporaryFactorsNumber] = CurrentGCD;
                     ++TemporaryFactorsNumber;
                 }
-                uint64_t OtherFactor = CurrentDecomposeNumber / CurrentGCD;
+
+                uint64_t OtherFactor = DecomposeNumber / CurrentGCD;
                 if (IsPrime(OtherFactor))
                 {
                     PrimeArray[PrimeArrayNumber] = OtherFactor;
@@ -299,6 +314,7 @@ __forceinline PrimeFactors __stdcall PrimeFactorize(uint64_t Number)
         }
     }
 
+    // Sort factors.
     {
         PrimeFactors Result;
         Result.PrimalityCount = 0;
@@ -341,41 +357,4 @@ __forceinline PrimeFactors __stdcall PrimeFactorize(uint64_t Number)
 
         return Result;
     }
-}
-
-int32_t main()
-{
-    uint64_t Number;
-    scanf("%llu", &Number);
-
-    LARGE_INTEGER CounterFrequency, StartCount, EndCount;
-    double DurationNanoseconds;
-
-    QueryPerformanceFrequency(&CounterFrequency);
-    QueryPerformanceCounter(&StartCount);
-
-    PrimeFactors PrimalitiesArray = PrimeFactorize(Number);
-
-    QueryPerformanceCounter(&EndCount);
-    DurationNanoseconds = (EndCount.QuadPart - StartCount.QuadPart) * 1000000.0 / CounterFrequency.QuadPart;
-
-    if (Number > 1)
-    {
-        printf("%lu^%lu", *PrimalitiesArray.Primality, *PrimalitiesArray.PrimalityExponent);
-        for (uint64_t K = 1; K < PrimalitiesArray.PrimalityCount; ++K)
-        {
-            printf(" * %lu^%lu", PrimalitiesArray.Primality[K], PrimalitiesArray.PrimalityExponent[K]);
-        }
-    }
-    else
-    {
-        printf("%lu", Number);
-    }
-
-    printf("\n\nTime-consuming %.3f microseconds.\n", DurationNanoseconds);
-
-    printf("\nPress any key to exit...\n");
-    _getch();
-
-    return 0;
 }
