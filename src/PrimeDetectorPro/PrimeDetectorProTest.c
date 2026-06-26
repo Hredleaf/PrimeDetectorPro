@@ -6,8 +6,8 @@
 #include <stdio.h>
 #pragma comment(lib, "bcrypt.lib")
 
-#define TEST_TIMES 1000000
-#define FACTORIZATION_TEST_TIMES 10000
+#define TEST_TIMES 20000000
+#define FACTORIZATION_TEST_TIMES 20000
 
 
 
@@ -20,7 +20,7 @@ int32_t main()
     volatile uint64_t NullTestResult;
     uint64_t *GCDResultArray = malloc(TEST_TIMES * sizeof(uint64_t));
     bool *PrimalityResultArray = malloc(TEST_TIMES * sizeof(bool));
-    PrimeFactors *FactorizationResultArray = malloc(TEST_TIMES * sizeof(PrimeFactors));
+    PrimeFactors *FactorizationResultArray = malloc(FACTORIZATION_TEST_TIMES * sizeof(PrimeFactors));
 
     uint64_t *RandomArray = malloc(TEST_TIMES * 8);
     BCRYPT_ALG_HANDLE Algorithm;
@@ -89,8 +89,14 @@ int32_t main()
     printf("End factorization calculation, taking %.3f nanoseconds.\n\n", DurationNanoseconds);
 
 
+    free(GCDResultArray);
+    free(PrimalityResultArray);
+    free(FactorizationResultArray);
+
+
     printf("\nPress any key to exit...\n");
     _getch();
+
 
     return 0;
 }

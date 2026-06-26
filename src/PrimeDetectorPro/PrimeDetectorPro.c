@@ -12,34 +12,73 @@ int32_t main()
     uint64_t Number;
     scanf("%llu", &Number);
 
-    LARGE_INTEGER CounterFrequency, StartCount, EndCount;
-    double DurationNanoseconds;
 
+    LARGE_INTEGER CounterFrequency, StartCount, EndCount;
+    double PrimalityDurationMicroseconds, FactorizationDurationMicroseconds;
     QueryPerformanceFrequency(&CounterFrequency);
+
+
+    QueryPerformanceCounter(&StartCount);
+
+    bool IsNumberPrime = IsPrime(Number);
+
+    QueryPerformanceCounter(&EndCount);
+    PrimalityDurationMicroseconds = (EndCount.QuadPart - StartCount.QuadPart) * 1000000.0 / CounterFrequency.QuadPart;
+
+
     QueryPerformanceCounter(&StartCount);
 
     PrimeFactors PrimalitiesArray = PrimeFactorize(Number);
 
     QueryPerformanceCounter(&EndCount);
-    DurationNanoseconds = (EndCount.QuadPart - StartCount.QuadPart) * 1000000.0 / CounterFrequency.QuadPart;
+    FactorizationDurationMicroseconds = (EndCount.QuadPart - StartCount.QuadPart) * 1000000.0 / CounterFrequency.QuadPart;
+
+
+    if (IsNumberPrime)
+    {
+        printf("\nIt is a primality.\n");
+    }
+    else
+    {
+        printf("\nIt is not a primality.\n");
+    }
+
 
     if (Number > 1)
     {
-        printf("%lu^%lu", *PrimalitiesArray.Primality, *PrimalitiesArray.PrimalityExponent);
+        if (*PrimalitiesArray.PrimalityExponent != 1)
+        {
+            printf("%llu^%llu", *PrimalitiesArray.Primality, *PrimalitiesArray.PrimalityExponent);
+        }
+        else
+        {
+            printf("%llu", *PrimalitiesArray.Primality);
+        }
         for (uint64_t K = 1; K < PrimalitiesArray.PrimalityCount; ++K)
         {
-            printf(" * %lu^%lu", PrimalitiesArray.Primality[K], PrimalitiesArray.PrimalityExponent[K]);
+            if (PrimalitiesArray.PrimalityExponent[K] != 1)
+            {
+                printf(" * %llu^%llu", PrimalitiesArray.Primality[K], PrimalitiesArray.PrimalityExponent[K]);
+            }
+            else
+            {
+                printf(" * %llu", PrimalitiesArray.Primality[K]);
+            }
         }
     }
     else
     {
-        printf("%lu", Number);
+        printf("%llu", Number);
     }
 
-    printf("\n\nTime-consuming %.3f microseconds.\n", DurationNanoseconds);
+
+    printf("\n\nCalculating primality consuming %.3f microseconds.\n", PrimalityDurationMicroseconds);
+    printf("\nFactorization consuming %.3f microseconds.\n", FactorizationDurationMicroseconds);
+
 
     printf("\nPress any key to exit...\n");
     _getch();
+
 
     return 0;
 }

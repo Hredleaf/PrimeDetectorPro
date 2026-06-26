@@ -16,3 +16,9 @@ include_directories("${CMAKE_SOURCE_DIR}/include/")
 add_executable("PrimeDetectorPro" "${CMAKE_SOURCE_DIR}/src/PrimeDetectorPro/PrimeDetectorPro.c")
 
 add_executable("PrimeDetectorProTest" "${CMAKE_SOURCE_DIR}/src/PrimeDetectorPro/PrimeDetectorProTest.c")
+target_compile_options("PrimeDetectorProTest" PRIVATE
+    "$<$<CONFIG:Release>:/O2" "/Ob2" "/Oi" "/Ot" "/GL" "/arch:AVX2>"
+)
+target_link_options("PrimeDetectorProTest" PRIVATE
+    "/LTCG"
+)
